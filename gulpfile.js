@@ -50,9 +50,11 @@ gulp.task("minifyCss", gulp.series('compileSass', function() {
 	.pipe(gulp.dest('dist/assets/css'));
 }));
 
-gulp.task('watchFiles', function() {
-	gulp.watch('assets/scss/**/*.scss', ['compileSass']);
-	gulp.watch('assets/js/**/*.js', ['concatScripts']);
+gulp.task('watchFiles', function(done) {
+	gulp.watch('assets/scss/**/*.scss', gulp.series('compileSass'));
+	gulp.watch('assets/js/**/*.js', gulp.series('concatScripts'));
+
+	done();
 });
 
 gulp.task('clean', function() {
@@ -83,7 +85,7 @@ gulp.task('serve', gulp.series('watchFiles', function(){
   	server: "./"
   });
 
-  gulp.watch("assets/scss/**/*.scss", ['watchFiles']);
+  gulp.watch("assets/scss/**/*.scss", gulp.series('watchFiles'));
   gulp.watch(['*.html', '*.php']).on('change', browserSync.reload);
 }));
 
